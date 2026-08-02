@@ -337,37 +337,79 @@
         '<p class="sub" style="margin-top:8px">Users, roles, and surface levels live in the users collection. Add a person by creating their doc with the email they sign in with, then set active true. Corey stays inactive until his gate clears. Jodey division economics flips with divisionDealsOk.</p></div></div>' +
         '<div class="sec panel"><div class="bd"><span class="kicker gold">Initialize workspace · one time</span>' +
         '<p class="sub" style="margin-top:8px">Paste the contents of seed.json from your local demo copy, then load. Writes users, config, deals, and pipelines in one shot. Safe to run once; it will not overwrite an existing workspace unless you confirm.</p>' +
-        '<textarea class="f" id="seedbox" rows="6" placeholder="paste seed.json here" style="margin-top:12px"></textarea>' +
-        '<div style="margin-top:14px"><button class="btn primary" id="seedgo">Load workspace data</button></div></div></div>';
+        '<p class="sub" style="margin-top:10px">Easiest way, no copying: pick the file straight off your computer.</p>' +
+        '<input type="file" id="seedfile" accept=".json,application/json" class="f" style="margin-top:8px;padding:9px">' +
+        '<p class="sub" style="margin-top:14px">Or paste the text instead.</p>' +
+        '<textarea class="f" id="seedbox" rows="6" placeholder="paste seed.json here" style="margin-top:8px"></textarea>' +
+        '<div style="margin-top:14px"><button class="btn primary" id="seedgo">Load workspace data</button></div>' +
+        '<div id="seedstatus" style="margin-top:14px;font:500 12px/1.6 var(--font-mono);white-space:pre-wrap"></div></div></div>';
       wireNav();
+      function stat(msg, isErr) {
+        var el = $("seedstatus");
+        if (!el) return;
+        el.style.color = isErr ? "var(--crit)" : "var(--good)";
+        el.textContent = msg;
+      }
+      var sf = $("seedfile");
+      if (sf) sf.onchange = function () {
+        var f = sf.files && sf.files[0];
+        if (!f) return;
+        var fr = new FileReader();
+        fr.onload = function () {
+          $("seedbox").value = fr.result;
+          stat("File read: " + f.name + ", " + fr.result.length + " characters. Now click Load workspace data.");
+        };
+        fr.onerror = function () { stat("Could not read that file. Try the paste box instead.", true); };
+        fr.readAsText(f);
+      };
       var sg = $("seedgo");
       if (sg) sg.onclick = function () {
-        var raw = $("seedbox").value.trim();
-        if (!raw) return toast("Paste seed.json first.");
-        var data;
-        try { data = JSON.parse(raw); } catch (e) { return toast("That is not valid JSON. Copy the whole file."); }
-        if (DEMO) return toast("Demo mode: nothing to load. This runs on the live site.");
-        db.collection("config").doc("legs").get().then(function (d) {
-          if (d.exists && !confirm("Workspace already has data. Overwrite config, deals, and pipelines?")) return;
-          var batch = db.batch();
-          Object.keys(data.users || {}).forEach(function (em) {
-            if (em.indexOf("PENDING") === -1) batch.set(db.collection("users").doc(em), data.users[em]);
+        try {
+          stat("Working...");
+          var raw = $("seedbox").value.trim();
+          if (!raw) return stat("Nothing loaded yet. Use the file picker above, or paste the text.", true);
+          raw = raw.replace(/[“”‘’]/g, '"');
+          var data;
+          try { data = JSON.parse(raw); }
+          catch (e) { return stat("The paste is not complete JSON. " + e.message + ". Open seed.json, select all, copy again, and make sure the last character pasted is a closing brace.", true); }
+          if (!data.users || !data.deals || !data.config) {
+            return stat("Parsed, but this does not look like seed.json. It needs users, config, deals, and pipelines sections. Copy the whole file.", true);
+          }
+          if (DEMO) return stat("This page is running in demo mode, so there is no live database to load. Open the live site address, not the local file.", true);
+          stat("Checking the database connection...");
+          db.collection("config").doc("legs").get().then(function (d) {
+            if (d.exists && !confirm("Workspace already has data. Overwrite config, deals, and pipelines?")) { stat("Cancelled. Nothing changed."); return; }
+            stat("Connection good. Writing documents...");
+            var batch = db.batch(); var n = 0;
+            Object.keys(data.users || {}).forEach(function (em) {
+              if (em.indexOf("PENDING") === -1) { batch.set(db.collection("users").doc(em), data.users[em]); n++; }
+            });
+            Object.keys(data.config || {}).forEach(function (k) { batch.set(db.collection("config").doc(k), data.config[k]); n++; });
+            Object.keys(data.deals || {}).forEach(function (k) {
+              var deal = Object.assign({}, data.deals[k]); var priv = deal.privateFull; delete deal.privateFull;
+              batch.set(db.collection("deals").doc(k), deal); n++;
+              if (priv) { batch.set(db.collection("deals").doc(k).collection("private").doc("full"), priv); n++; }
+            });
+            Object.keys(data.pipelines || {}).forEach(function (k) { batch.set(db.collection("pipelines").doc(k), data.pipelines[k]); n++; });
+            batch.commit().then(
+              function () { stat("DONE. " + n + " documents written. Open Boards at the top and the deals are live."); toast("Workspace loaded."); },
+              function (e) { stat("The database refused the write. Exact reason: " + (e.code || "") + " " + e.message + ". Send these words to your builder.", true); }
+            );
+          }, function (e) {
+            stat("Could not reach the database. Exact reason: " + (e.code || "") + " " + e.message + ". If this says permission-denied, the rules publish did not take. If it mentions network or blocked, a browser extension or firewall is stopping firestore.googleapis.com.", true);
           });
-          Object.keys(data.config || {}).forEach(function (k) { batch.set(db.collection("config").doc(k), data.config[k]); });
-          Object.keys(data.deals || {}).forEach(function (k) {
-            var deal = Object.assign({}, data.deals[k]); var priv = deal.privateFull; delete deal.privateFull;
-            batch.set(db.collection("deals").doc(k), deal);
-            if (priv) batch.set(db.collection("deals").doc(k).collection("private").doc("full"), priv);
-          });
-          Object.keys(data.pipelines || {}).forEach(function (k) { batch.set(db.collection("pipelines").doc(k), data.pipelines[k]); });
-          batch.commit().then(function () { toast("Workspace loaded. Open Boards."); }, function (e) { toast("Load failed: " + e.message); });
-        });
+        } catch (e2) {
+          stat("Unexpected error: " + e2.message, true);
+        }
       };
       log("view", { view: "admin" }); startDwell();
     }
     if (DEMO) return render([{ email: "derek.rigsby@gmail.com", type: "view", deal: "FF-001" }]);
     db.collection("activity").orderBy("at", "desc").limit(500).get().then(function (q) {
       var out = []; q.forEach(function (d) { out.push(d.data()); }); render(out);
+    }, function () {
+      // never let a failed read hide the page: the setup panel must always appear
+      render([]);
     });
   }
 
