@@ -192,11 +192,11 @@
 
   function dealFullFF(full) {
     if (!full) return "";
-    var mix = full.mix.map(function (r) {
-      return "<tr><td>" + esc(r[0]) + '</td><td class="num">' + r[1] + '</td><td class="num">' + money(r[2]) + "</td></tr>";
+    var mix = (full.mix || []).map(function (r) {
+      return "<tr><td>" + esc(r.label) + '</td><td class="num">' + r.units + '</td><td class="num">' + money(r.volume) + "</td></tr>";
     }).join("");
-    var ag = full.agents.map(function (r) {
-      return "<tr><td>" + esc(r[0]) + "</td><td>" + esc(r[1]) + '</td><td class="num">' + r[2] + '</td><td class="num">' + money(r[3]) + "</td></tr>";
+    var ag = (full.agents || []).map(function (r) {
+      return "<tr><td>" + esc(r.name) + "</td><td>" + esc(r.brokerage) + '</td><td class="num">' + r.sides + '</td><td class="num">' + money(r.dollars) + "</td></tr>";
     }).join("");
     return '<div class="sec grid g3" data-sec="ff-econ">' +
       '<div class="tile"><div class="label">Funded volume · T12</div><div class="value" style="font-size:34px">' + money(full.volume) + '</div><div class="foot">Avg loan <b>' + money(full.avgLoan) + "</b></div></div>" +
@@ -210,8 +210,8 @@
   }
 
   function dealShareTR(d) {
-    var tiles = d.share.tiles.map(function (t) {
-      return '<div class="tile"><div class="label">' + esc(t[0]) + '</div><div class="value" style="font-size:30px">' + esc(t[1]) + "</div></div>";
+    var tiles = (d.share.tiles || []).map(function (t) {
+      return '<div class="tile"><div class="label">' + esc(t.k) + '</div><div class="value" style="font-size:30px">' + esc(t.v) + "</div></div>";
     }).join("");
     return '<div class="sec grid g3" data-sec="tr-tiles">' + tiles + "</div>" +
       '<div class="sec panel" data-sec="tr-note"><div class="bd"><p class="sub">' + esc(d.share.note) + "</p></div></div>";
@@ -379,22 +379,28 @@
           stat("Checking the database connection...");
           db.collection("config").doc("legs").get().then(function (d) {
             if (d.exists && !confirm("Workspace already has data. Overwrite config, deals, and pipelines?")) { stat("Cancelled. Nothing changed."); return; }
-            stat("Connection good. Writing documents...");
-            var batch = db.batch(); var n = 0;
-            Object.keys(data.users || {}).forEach(function (em) {
-              if (em.indexOf("PENDING") === -1) { batch.set(db.collection("users").doc(em), data.users[em]); n++; }
-            });
-            Object.keys(data.config || {}).forEach(function (k) { batch.set(db.collection("config").doc(k), data.config[k]); n++; });
-            Object.keys(data.deals || {}).forEach(function (k) {
-              var deal = Object.assign({}, data.deals[k]); var priv = deal.privateFull; delete deal.privateFull;
-              batch.set(db.collection("deals").doc(k), deal); n++;
-              if (priv) { batch.set(db.collection("deals").doc(k).collection("private").doc("full"), priv); n++; }
-            });
-            Object.keys(data.pipelines || {}).forEach(function (k) { batch.set(db.collection("pipelines").doc(k), data.pipelines[k]); n++; });
+            stat("Connection good. Preparing documents...");
+            var batch, n = 0, where = "start";
+            try {
+              batch = db.batch();
+              Object.keys(data.users || {}).forEach(function (em) {
+                if (em.indexOf("PENDING") === -1) { where = "users/" + em; batch.set(db.collection("users").doc(em), data.users[em]); n++; }
+              });
+              Object.keys(data.config || {}).forEach(function (k) { where = "config/" + k; batch.set(db.collection("config").doc(k), data.config[k]); n++; });
+              Object.keys(data.deals || {}).forEach(function (k) {
+                var deal = Object.assign({}, data.deals[k]); var priv = deal.privateFull; delete deal.privateFull;
+                where = "deals/" + k; batch.set(db.collection("deals").doc(k), deal); n++;
+                if (priv) { where = "deals/" + k + "/private/full"; batch.set(db.collection("deals").doc(k).collection("private").doc("full"), priv); n++; }
+              });
+              Object.keys(data.pipelines || {}).forEach(function (k) { where = "pipelines/" + k; batch.set(db.collection("pipelines").doc(k), data.pipelines[k]); n++; });
+            } catch (be) {
+              return stat("The data was rejected while preparing " + where + ". Exact reason: " + be.message + ". Send these words to your builder.", true);
+            }
+            stat("Writing " + n + " documents...");
             batch.commit().then(
               function () { stat("DONE. " + n + " documents written. Open Boards at the top and the deals are live."); toast("Workspace loaded."); },
               function (e) { stat("The database refused the write. Exact reason: " + (e.code || "") + " " + e.message + ". Send these words to your builder.", true); }
-            );
+            ).catch(function (e3) { stat("Write stopped unexpectedly: " + e3.message, true); });
           }, function (e) {
             stat("Could not reach the database. Exact reason: " + (e.code || "") + " " + e.message + ". If this says permission-denied, the rules publish did not take. If it mentions network or blocked, a browser extension or firewall is stopping firestore.googleapis.com.", true);
           });
