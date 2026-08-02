@@ -375,6 +375,36 @@
           if (!data.users || !data.deals || !data.config) {
             return stat("Parsed, but this does not look like seed.json. It needs users, config, deals, and pipelines sections. Copy the whole file.", true);
           }
+          // The database refuses a list inside a list. Older seed files carried a few.
+          // Repair them here so any version of the file loads cleanly.
+          var repaired = 0;
+          var KEYS = {
+            mix: ["label", "units", "volume"],
+            agents: ["name", "brokerage", "sides", "dollars"],
+            tiles: ["k", "v"]
+          };
+          function repair(node, keyName) {
+            if (Array.isArray(node)) {
+              var inner = KEYS[keyName] || null;
+              return node.map(function (item) {
+                if (Array.isArray(item)) {
+                  repaired++;
+                  var obj = {};
+                  item.forEach(function (val, i) { obj[inner && inner[i] ? inner[i] : "v" + i] = val; });
+                  return obj;
+                }
+                return repair(item, keyName);
+              });
+            }
+            if (node && typeof node === "object") {
+              var out = {};
+              Object.keys(node).forEach(function (k) { out[k] = repair(node[k], k); });
+              return out;
+            }
+            return node;
+          }
+          data = repair(data, "root");
+          if (repaired) stat("Adjusted " + repaired + " list fields from an older file version. Continuing...");
           if (DEMO) return stat("This page is running in demo mode, so there is no live database to load. Open the live site address, not the local file.", true);
           stat("Checking the database connection...");
           db.collection("config").doc("legs").get().then(function (d) {
