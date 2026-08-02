@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Rigsby West · Family First Division</title>
+<link rel="stylesheet" href="signal.css">
+<style>
+/* portal-specific extensions to the SIGNAL system */
+.appbar{display:flex;align-items:center;justify-content:space-between;padding:16px 0;flex-wrap:wrap;gap:10px}
+.nav{display:flex;gap:6px;flex-wrap:wrap}
+.nav .btn.active{border-color:var(--gold);color:var(--gold)}
+.login-hero{max-width:520px;margin:9vh auto 0;text-align:center}
+.login-hero .panel{padding:38px 34px}
+.notice{font-size:11px;color:var(--ink-3);margin-top:16px;line-height:1.5}
+.milestrip{display:flex;gap:4px;margin:10px 0 4px}
+.milestrip .m{flex:1;height:7px;border-radius:3px;background:var(--s3)}
+.milestrip .m.on{background:var(--gold)}
+.milelabel{font:500 10px/1 var(--font-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2)}
+.rowlink{cursor:pointer}
+.rowlink:hover td{color:var(--gold)}
+.modal{position:fixed;inset:0;background:rgba(6,8,12,.8);display:none;align-items:flex-start;justify-content:center;z-index:9500;padding:6vh 16px}
+.modal.open{display:flex}
+.modal .panel{width:100%;max-width:560px;background:var(--s2)}
+label.f{display:block;font:500 10px/1 var(--font-mono);letter-spacing:.18em;text-transform:uppercase;color:var(--ink-2);margin:16px 0 7px}
+input.f,select.f,textarea.f{width:100%;background:var(--s0);border:1px solid var(--line-strong);border-radius:var(--r-sm);color:var(--ink);font:400 14px/1.4 var(--font-ui);padding:11px 12px}
+input.f:focus,select.f:focus,textarea.f:focus{outline:none;border-color:var(--gold)}
+.checks{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:6px}
+.checks label{display:flex;gap:9px;align-items:center;font-size:13px;color:var(--ink-2);cursor:pointer}
+.bars{display:grid;gap:7px}
+.bar{display:grid;grid-template-columns:44px 1fr 34px;gap:10px;align-items:center}
+.bar .lbl{font:500 10px/1 var(--font-mono);color:var(--ink-3);text-transform:uppercase}
+.bar .track{height:12px;background:var(--s3);border-radius:0 4px 4px 0;position:relative}
+.bar .fill{height:100%;background:var(--cat-1);border-radius:0 4px 4px 0}
+.bar .v{font:500 12px/1 var(--font-mono);color:var(--ink);text-align:right}
+.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:var(--s3);border:1px solid var(--gold-deep);color:var(--ink);padding:12px 18px;border-radius:8px;font-size:13px;display:none;z-index:9600}
+.demo-banner{background:rgba(200,127,59,.12);border:1px solid rgba(200,127,59,.4);color:var(--warn);border-radius:var(--r-sm);padding:10px 14px;font:500 11px/1.4 var(--font-mono);letter-spacing:.06em;margin:14px 0}
+.grid.g3{grid-template-columns:repeat(3,1fr)}
+@media(max-width:840px){.grid.g3{grid-template-columns:1fr}.checks{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="noise"></div>
+<div class="wrap" id="app"><!-- views render here --></div>
+<div class="toast" id="toast"></div>
+
+<!-- Firebase compat SDKs. The app runs in demo mode off seed data until config.js carries real keys. -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script src="config.js"></script>
+<script src="seed_embed.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

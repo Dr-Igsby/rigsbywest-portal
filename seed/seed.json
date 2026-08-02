@@ -1,0 +1,401 @@
+{
+ "config": {
+  "legs": {
+   "list": [
+    {
+     "id": "DIV",
+     "label": "Gabe Division only"
+    },
+    {
+     "id": "REGION",
+     "label": "Region view only"
+    },
+    {
+     "id": "WTW-200",
+     "label": "WTW-200 Consumer Direct"
+    },
+    {
+     "id": "WTW-110",
+     "label": "WTW-110 Realtor Direct"
+    },
+    {
+     "id": "WTW-300",
+     "label": "WTW-300 Reverse"
+    },
+    {
+     "id": "WTW-000",
+     "label": "WTW-000 Region"
+    }
+   ]
+  },
+  "buildMenu": {
+   "list": [
+    {
+     "id": "record",
+     "label": "Deal record"
+    },
+    {
+     "id": "dashboard",
+     "label": "Track record dashboard"
+    },
+    {
+     "id": "room",
+     "label": "Deal room"
+    },
+    {
+     "id": "proforma",
+     "label": "Proforma with breakeven strip"
+    }
+   ]
+  },
+  "flags": {
+   "leadLaneOpen": false
+  }
+ },
+ "users": {
+  "derek.rigsby@gmail.com": {
+   "name": "Derek Rigsby",
+   "active": true,
+   "divisionDealsOk": true,
+   "roles": {
+    "admin": true,
+    "dealCreator": true
+   },
+   "surfaces": {
+    "deals": "full",
+    "economics": "full",
+    "pipelines": "full",
+    "dashboards": "full",
+    "boards": true,
+    "leadLane": true,
+    "marketingLane": true
+   }
+  },
+  "jodey@mitigately.com": {
+   "name": "Jodey Seaman",
+   "active": false,
+   "divisionDealsOk": false,
+   "roles": {
+    "admin": false,
+    "dealCreator": false
+   },
+   "surfaces": {
+    "deals": "strategy",
+    "economics": "full",
+    "pipelines": "full",
+    "dashboards": "full",
+    "boards": true,
+    "leadLane": false,
+    "marketingLane": false
+   },
+   "note": "Region economics full. Division-deal full econ flips on when Derek logs Gabe's OK (divisionDealsOk true). Stress tester first."
+  },
+  "GABE_EMAIL_PENDING": {
+   "name": "Gabe Gillen",
+   "active": false,
+   "divisionDealsOk": true,
+   "roles": {
+    "admin": false,
+    "dealCreator": false
+   },
+   "surfaces": {
+    "deals": "strategy",
+    "economics": "headline",
+    "pipelines": "full",
+    "dashboards": "share",
+    "boards": true,
+    "leadLane": false,
+    "marketingLane": false
+   }
+  },
+  "JP_EMAIL_PENDING": {
+   "name": "John Perry",
+   "active": false,
+   "divisionDealsOk": false,
+   "roles": {
+    "admin": false,
+    "dealCreator": false
+   },
+   "surfaces": {
+    "deals": "status",
+    "economics": "none",
+    "pipelines": "nonfinancial",
+    "dashboards": "none",
+    "boards": true,
+    "leadLane": false,
+    "marketingLane": true
+   }
+  },
+  "JEFF_EMAIL_PENDING": {
+   "name": "Jeff Wetzel",
+   "active": false,
+   "divisionDealsOk": false,
+   "roles": {
+    "admin": false,
+    "dealCreator": false
+   },
+   "surfaces": {
+    "deals": "status",
+    "economics": "none",
+    "pipelines": "status",
+    "dashboards": "none",
+    "boards": true,
+    "leadLane": false,
+    "marketingLane": false
+   }
+  },
+  "CHELSEY_EMAIL_PENDING": {
+   "name": "Chelsey Hinojosa",
+   "active": false,
+   "divisionDealsOk": false,
+   "roles": {
+    "admin": false,
+    "dealCreator": false
+   },
+   "surfaces": {
+    "deals": "status",
+    "economics": "none",
+    "pipelines": "status",
+    "dashboards": "none",
+    "boards": true,
+    "leadLane": false,
+    "marketingLane": false
+   }
+  },
+  "COREY_EMAIL_PENDING": {
+   "name": "Corey (Mitigately)",
+   "active": false,
+   "divisionDealsOk": false,
+   "roles": {
+    "admin": false,
+    "dealCreator": false
+   },
+   "surfaces": {
+    "deals": "none",
+    "economics": "none",
+    "pipelines": "none",
+    "dashboards": "none",
+    "boards": false,
+    "leadLane": true,
+    "marketingLane": false
+   },
+   "note": "Region lead-performance lane only. Login stays inactive until the review clears and terms are papered. leadLaneOpen flag also gates server-side."
+  }
+ },
+ "deals": {
+  "FF-001": {
+   "code": "FF-001",
+   "name": "Jon Yaskowitz",
+   "market": "Phoenix West Valley AZ",
+   "leg": "DIV",
+   "milestone": 3,
+   "milestoneLabel": "3 Processing",
+   "loanAnalog": "Docs and processing",
+   "grade": "Production Verified, track record print 7/31/2026, tie-out passed 6 of 6",
+   "summary": "Phoenix West Valley LO recruit sourced by Gabe. Bank seat today. Purchase machine with a real repeat-agent web. The product suite is a weapon no bank can hand him.",
+   "share": {
+    "units": 75,
+    "purchasePct": 76,
+    "govPct": 41,
+    "azPurchase": "42/57",
+    "bestMonth": "10",
+    "monthly": {
+     "labels": [
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul"
+     ],
+     "units": [
+      7,
+      8,
+      5,
+      5,
+      7,
+      3,
+      5,
+      7,
+      9,
+      10,
+      9,
+      0
+     ]
+    },
+    "flags": [
+     "Jul 26 shows zero recorded closings on a 7/31 print. Verify open."
+    ],
+    "nextStep": "Verification pull, then first outreach.",
+    "govFoot": "20 FHA and 11 VA of 75 units",
+    "azFoot": "Surprise, Peoria, Sun City core"
+   },
+   "privateFull": {
+    "volume": 30397103,
+    "avgLoan": 405294,
+    "mix": [
+     [
+      "Purchase",
+      57,
+      22327774
+     ],
+     [
+      "Refinance",
+      18,
+      8069329
+     ],
+     [
+      "Conventional",
+      44,
+      17836661
+     ],
+     [
+      "FHA",
+      20,
+      6931162
+     ],
+     [
+      "VA",
+      11,
+      5629280
+     ],
+     [
+      "Arizona all",
+      53,
+      21356576
+     ]
+    ],
+    "agents": [
+     [
+      "T. Wayne Cole",
+      "Realty One Group",
+      6,
+      1847499
+     ],
+     [
+      "Ben Leahy",
+      "BHHS Arizona",
+      4,
+      1895787
+     ],
+     [
+      "Stan Abraham",
+      "BHHS Arizona",
+      4,
+      1471498
+     ],
+     [
+      "Thomas Ghrist",
+      "Decker & Associates",
+      4,
+      1336886
+     ],
+     [
+      "Cindi Ashton",
+      "BHHS Arizona",
+      4,
+      1190105
+     ],
+     [
+      "Caitlin Boyd",
+      "W And Partners",
+      3,
+      827946
+     ]
+    ],
+    "breakeven": {
+     "volume": "Pending proforma",
+     "shock25": "Pending",
+     "shock375": "Pending"
+    }
+   }
+  },
+  "TR-718-01": {
+   "code": "TR-718-01",
+   "name": "Omar Hassan",
+   "market": "Metro New York",
+   "leg": "DIV",
+   "milestone": 4,
+   "milestoneLabel": "4 Underwriting",
+   "loanAnalog": "Underwriting the fit",
+   "grade": "Subject verified two ways before the build",
+   "summary": "Senior LO, Metro New York. Licensed CT, FL, NJ, NY, PA. Staten Island anchor. Traditional retail recruit in Gabe's division.",
+   "share": {
+    "tiles": [
+     [
+      "T12 volume",
+      "$27.2M"
+     ],
+     [
+      "Units",
+      "42"
+     ],
+     [
+      "Purchase",
+      "94%"
+     ],
+     [
+      "Avg loan",
+      "$648K"
+     ],
+     [
+      "Start",
+      "Oct 2026"
+     ],
+     [
+      "Breakeven",
+      "Month 3"
+     ]
+    ],
+    "note": "Base case shown. Conservative and strong cases sit in the room. Model demonstrated live, on request.",
+    "nextStep": "Gabe review, then candidate meeting."
+   },
+   "privateFull": {
+    "note": "Full model stays out of the portal by design. Numbers demonstrate live from the room. Rule 10.",
+    "breakeven": {
+     "volume": "Month 3 to breakeven, base case",
+     "shock25": "In the room",
+     "shock375": "In the room"
+    }
+   }
+  }
+ },
+ "pipelines": {
+  "IND-FF-001": {
+   "board": "individual",
+   "dealId": "FF-001",
+   "name": "Jon Yaskowitz",
+   "market": "Phoenix West Valley AZ",
+   "milestone": 3,
+   "milestoneLabel": "3 Processing",
+   "loanAnalog": "Docs and processing",
+   "next": "Verification pull, then first outreach"
+  },
+  "IND-TR-718": {
+   "board": "individual",
+   "dealId": "TR-718-01",
+   "name": "Omar Hassan",
+   "market": "Metro New York",
+   "milestone": 4,
+   "milestoneLabel": "4 Underwriting",
+   "loanAnalog": "Underwriting the fit",
+   "next": "Gabe review, then candidate meeting"
+  },
+  "TEAM-TEMPLATE": {
+   "board": "teams",
+   "dealId": null,
+   "name": "Template row",
+   "market": "",
+   "milestone": 1,
+   "milestoneLabel": "1 Prospecting",
+   "loanAnalog": "Lead generation",
+   "next": "Spine ready. No live team deal yet."
+  }
+ }
+}

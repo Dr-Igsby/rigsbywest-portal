@@ -1,0 +1,93 @@
+/* ============================================================
+   SIGNAL  ·  the design system for internal consoles and sites
+   Rigsby West · Family First Division · AnnieMac Home Mortgage
+   v1.1 · August 2026 · portal build
+   Rule: find the signal, cut the noise. One accent. Dark room.
+   Non-consumer surfaces only. Consumer work goes through
+   marketing with its own brand.
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap');
+
+:root{
+  --s0:#0A0D13; --s1:#10141D; --s2:#161B27; --s3:#1D2433;
+  --line:rgba(233,228,214,.08); --line-strong:rgba(233,228,214,.17);
+  --ink:#E9E4D6; --ink-2:#A9A597; --ink-3:#6F6D63;
+  --gold:#D9AC49; --gold-hi:#EFC868; --gold-deep:#8A6A25; --gold-glow:rgba(217,172,73,.14);
+  --good:#5FA97C; --warn:#C87F3B; --crit:#C05B52; --info:#7C9CC4;
+  --cat-1:#C98500; --cat-2:#3987E5; --cat-3:#D95926; --cat-4:#9085E9; --cat-neutral:#8A93A5;
+  --font-display:'Fraunces',Georgia,'Times New Roman',serif;
+  --font-ui:'Inter',-apple-system,'Segoe UI',sans-serif;
+  --font-mono:'IBM Plex Mono','SF Mono',Consolas,monospace;
+  --r:10px; --r-sm:7px; --pad:24px; --gap:16px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+body{background:var(--s0);color:var(--ink);font:400 14px/1.55 var(--font-ui);min-height:100vh}
+::selection{background:var(--gold);color:#0A0D13}
+a{color:var(--gold);text-decoration:none}
+a:hover{color:var(--gold-hi)}
+.noise{position:fixed;inset:0;pointer-events:none;z-index:9990;opacity:.028;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");}
+.sigmark{display:inline-block;vertical-align:middle}
+.sigmark path{stroke:var(--gold);stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.kicker{font:500 10px/1 var(--font-mono);letter-spacing:.24em;text-transform:uppercase;color:var(--ink-3)}
+.kicker.gold{color:var(--gold)}
+h1.display{font:500 clamp(26px,3.4vw,40px)/1.12 var(--font-display);letter-spacing:.01em}
+h2.section{font:500 21px/1.2 var(--font-display)}
+.sub{color:var(--ink-2);font-size:13px}
+.mono{font-family:var(--font-mono)}
+.num{font-family:var(--font-mono);font-variant-numeric:tabular-nums}
+.wrap{max-width:1180px;margin:0 auto;padding:0 28px 60px}
+.signal-line{height:2px;background:linear-gradient(90deg,var(--gold) 0%,rgba(217,172,73,.25) 38%,transparent 78%);border:0}
+.rule{border:0;border-top:1px solid var(--line)}
+.panel{background:var(--s1);border:1px solid var(--line);border-radius:var(--r)}
+.panel.raised{background:var(--s2)}
+.panel .hd{display:flex;align-items:baseline;justify-content:space-between;gap:12px;padding:18px var(--pad) 0}
+.panel .bd{padding:var(--pad)}
+.card{background:var(--s1);border:1px solid var(--line);border-radius:var(--r);padding:20px;transition:border-color .18s,transform .18s}
+.card.click{cursor:pointer}
+.card.click:hover{border-color:var(--gold-deep);transform:translateY(-1px)}
+.chip{display:inline-flex;align-items:center;gap:6px;font:500 10px/1 var(--font-mono);
+  letter-spacing:.14em;text-transform:uppercase;padding:5px 9px;border-radius:999px;
+  border:1px solid var(--line-strong);color:var(--ink-2);background:transparent}
+.chip .dot{width:6px;height:6px;border-radius:50%;background:var(--ink-3)}
+.chip.live{color:var(--good);border-color:rgba(95,169,124,.4)}   .chip.live .dot{background:var(--good)}
+.chip.pending{color:var(--warn);border-color:rgba(200,127,59,.4)} .chip.pending .dot{background:var(--warn)}
+.chip.draft{color:var(--info);border-color:rgba(124,156,196,.4)}  .chip.draft .dot{background:var(--info)}
+.chip.locked{color:var(--ink-3)} .chip.gold{color:var(--gold);border-color:rgba(217,172,73,.45)} .chip.gold .dot{background:var(--gold)}
+.btn{display:inline-flex;align-items:center;gap:8px;font:600 12px/1 var(--font-ui);
+  letter-spacing:.04em;padding:11px 18px;border-radius:var(--r-sm);cursor:pointer;
+  border:1px solid transparent;transition:all .15s}
+.btn.primary{background:var(--gold);color:#131008}
+.btn.primary:hover{background:var(--gold-hi)}
+.btn.ghost{background:transparent;color:var(--ink);border-color:var(--line-strong)}
+.btn.ghost:hover{border-color:var(--gold);color:var(--gold)}
+.btn.sm{padding:8px 13px;font-size:11px}
+.tile{background:var(--s1);border:1px solid var(--line);border-radius:var(--r);padding:22px 24px}
+.tile .label{font:500 10px/1 var(--font-mono);letter-spacing:.2em;text-transform:uppercase;color:var(--ink-2);margin-bottom:14px}
+.tile .value{font:500 54px/1 var(--font-display);color:var(--ink);letter-spacing:.01em}
+.tile .value .unit{font-size:26px;color:var(--ink-2)}
+.tile .foot{margin-top:12px;font-size:12px;color:var(--ink-2)}
+.tile .foot b{color:var(--gold);font-weight:600}
+table.sig{width:100%;border-collapse:collapse;font-size:13px}
+table.sig th{font:500 10px/1 var(--font-mono);letter-spacing:.16em;text-transform:uppercase;
+  color:var(--ink-3);text-align:left;padding:10px 12px;border-bottom:1px solid var(--line-strong)}
+table.sig td{padding:11px 12px;border-bottom:1px solid var(--line);color:var(--ink-2)}
+table.sig td:first-child{color:var(--ink)}
+table.sig td.num,table.sig th.num{text-align:right;font-family:var(--font-mono);font-variant-numeric:tabular-nums}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:18px 0}
+.brandlock{display:flex;align-items:center;gap:14px}
+.brandlock .wordmark{font:500 15px/1 var(--font-display);letter-spacing:.06em}
+.brandlock .org{font:500 10px/1 var(--font-mono);letter-spacing:.18em;text-transform:uppercase;color:var(--ink-3);border-left:1px solid var(--line-strong);padding-left:14px}
+.grid{display:grid;gap:var(--gap)}
+.g2{grid-template-columns:1fr 1fr}
+.g4{grid-template-columns:repeat(4,1fr)}
+.sec{margin-top:26px}
+.foot-note{color:var(--ink-3);font-size:11px}
+.motto{font:400 10px/1 var(--font-mono);letter-spacing:.14em;color:var(--ink-3);opacity:.7}
+@media (max-width:840px){
+  .tile .value{font-size:40px}
+  .wrap{padding:0 16px 40px}
+  .g2,.g4{grid-template-columns:1fr}
+}

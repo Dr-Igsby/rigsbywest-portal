@@ -1,0 +1,79 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() { return request.auth != null; }
+    function isOwner() {
+      return signedIn() && request.auth.token.email == 'derek.rigsby@gmail.com';
+    }
+    function me() {
+      return get(/databases/$(database)/documents/users/$(request.auth.token.email)).data;
+    }
+    function hasDoc() {
+      return exists(/databases/$(database)/documents/users/$(request.auth.token.email));
+    }
+    function isActive() {
+      return isOwner() || (signedIn() && hasDoc() && me().active == true);
+    }
+    function isAdmin() {
+      return isOwner() || (signedIn() && hasDoc() && me().active == true && me().roles.admin == true);
+    }
+    function isDealCreator() {
+      return isOwner() || (signedIn() && hasDoc() && me().active == true && me().roles.dealCreator == true);
+    }
+    function surf(k) {
+      return isOwner() ? 'full' : me().surfaces[k];
+    }
+
+    match /users/{email} {
+      allow read: if isAdmin() || (signedIn() && request.auth.token.email == email);
+      allow write: if isAdmin();
+    }
+
+    match /config/{doc} {
+      allow read: if isActive();
+      allow write: if isAdmin();
+    }
+
+    match /deals/{dealId} {
+      allow read: if isActive() && surf('deals') != 'none';
+      allow write: if isAdmin();
+
+      match /private/{doc} {
+        allow read: if isAdmin()
+          || (isActive() && surf('economics') == 'full' && me().divisionDealsOk == true);
+        allow write: if isAdmin();
+      }
+
+      match /timeline/{doc} {
+        allow read: if isActive() && surf('deals') != 'none';
+        allow create: if isActive();
+        allow update, delete: if isAdmin();
+      }
+    }
+
+    match /pipelines/{rowId} {
+      allow read: if isActive() && surf('pipelines') != 'none';
+      allow write: if isAdmin();
+    }
+
+    match /activity/{eventId} {
+      allow create: if isActive() && request.resource.data.email == request.auth.token.email;
+      allow read: if isAdmin();
+      allow update, delete: if false;
+    }
+
+    match /buildTickets/{ticketId} {
+      allow create: if isDealCreator();
+      allow read: if isAdmin();
+      allow update, delete: if isAdmin();
+    }
+
+    match /leads/{leadId} {
+      allow read: if isAdmin() || (isOwner()) || (isActive() && me().surfaces.leadLane == true);
+      allow write: if isAdmin();
+    }
+
+    match /{document=**} { allow read, write: if false; }
+  }
+}
